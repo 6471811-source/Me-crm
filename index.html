@@ -40,14 +40,12 @@
     mask-image: radial-gradient(ellipse at center top, #000 30%, transparent 90%);
     -webkit-mask-image: radial-gradient(ellipse at center top, #000 30%, transparent 90%);
   }
-
   .corner-mark {
     position: fixed;
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
     color: var(--muted-light);
-    z-index: 5;
-    pointer-events: none;
+    z-index: 5; pointer-events: none;
     letter-spacing: 0.5px;
   }
   .corner-mark.tl { top: 12px; left: 12px; }
@@ -76,8 +74,12 @@
     background: var(--accent);
     border-radius: 1px;
     margin-right: 8px;
-    position: relative;
-    top: -1px;
+    position: relative; top: -1px;
+    animation: markPulse 2s ease-in-out infinite;
+  }
+  @keyframes markPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,59,31,0.6); }
+    50% { box-shadow: 0 0 0 8px rgba(255,59,31,0); }
   }
   .brand-version {
     font-family: 'JetBrains Mono', monospace;
@@ -157,6 +159,21 @@
     font-style: italic;
     font-weight: 300;
     color: var(--accent);
+    position: relative;
+    display: inline-block;
+  }
+  .hero h1 em::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0.05em;
+    height: 0.08em;
+    background: var(--accent);
+    opacity: 0.3;
+    animation: underlineGrow 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s both;
+  }
+  @keyframes underlineGrow {
+    from { transform: scaleX(0); transform-origin: left; }
+    to { transform: scaleX(1); }
   }
   .hero-sub {
     font-size: 17px;
@@ -232,6 +249,20 @@
     height: 100%;
     max-width: 700px;
     aspect-ratio: 1;
+  }
+  .hero-right::before {
+    content: '';
+    position: absolute;
+    inset: 15%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,59,31,0.12), transparent 60%);
+    filter: blur(40px);
+    z-index: -1;
+    animation: heroGlow 4s ease-in-out infinite;
+  }
+  @keyframes heroGlow {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 0.9; transform: scale(1.1); }
   }
   .hud {
     position: absolute;
@@ -329,6 +360,9 @@
     transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.5s;
   }
   .model-card:hover { transform: translateY(-4px); box-shadow: 0 30px 60px rgba(10,10,10,0.08); }
+  .model-card:hover .model-3d::after {
+    opacity: 1;
+  }
   .model-card-large .model-3d { aspect-ratio: 16/10; }
   .model-3d {
     position: relative;
@@ -337,6 +371,7 @@
     background: linear-gradient(180deg, #fafaf7 0%, #f0ede6 100%);
     overflow: hidden;
   }
+  .model-card-large .model-3d { aspect-ratio: 16/10; }
   .model-3d canvas { display: block; width: 100% !important; height: 100% !important; }
   .model-3d::before {
     content: ''; position: absolute; inset: 0;
@@ -344,6 +379,15 @@
       linear-gradient(rgba(10,10,10,0.03) 1px, transparent 1px),
       linear-gradient(90deg, rgba(10,10,10,0.03) 1px, transparent 1px);
     background-size: 30px 30px;
+    pointer-events: none;
+  }
+  .model-3d::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(255,59,31,0.12), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.5s;
     pointer-events: none;
   }
   .model-hud {
@@ -403,6 +447,7 @@
     border-radius: 4px;
     overflow: hidden;
     border: 1px solid #1a1a1a;
+    box-shadow: 0 30px 80px rgba(10,10,10,0.15);
   }
   .dashboard-topbar {
     display: flex; justify-content: space-between; align-items: center;
@@ -432,7 +477,9 @@
     padding: 28px 24px;
     min-height: 180px;
     display: flex; flex-direction: column;
+    transition: background 0.3s;
   }
+  .dashboard-cell:hover { background: #111; }
   .dashboard-cell.span-2 { grid-column: span 2; }
   .dashboard-cell.span-3 { grid-column: span 3; }
   .dash-label {
@@ -544,6 +591,7 @@
     max-height: 380px;
     overflow: hidden;
     line-height: 1.75;
+    box-shadow: 0 20px 60px rgba(10,10,10,0.15);
   }
   .flow-line {
     display: flex; align-items: baseline; gap: 12px;
@@ -606,7 +654,15 @@
       linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
     background-size: 48px 48px;
   }
-  .cta-block-inner { position: relative; text-align: center; max-width: 800px; margin: 0 auto; }
+  .cta-block::after {
+    content: ''; position: absolute; top: -50%; left: 50%; transform: translateX(-50%);
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(255,59,31,0.2), transparent 60%);
+    filter: blur(80px);
+    pointer-events: none;
+    animation: heroGlow 6s ease-in-out infinite;
+  }
+  .cta-block-inner { position: relative; text-align: center; max-width: 800px; margin: 0 auto; z-index: 1; }
   .cta-block h2 {
     font-size: clamp(40px, 5.5vw, 84px);
     font-weight: 800;
@@ -668,7 +724,7 @@
 
   .reveal {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(24px);
     transition: opacity 0.9s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
   .reveal.visible { opacity: 1; transform: translateY(0); }
@@ -679,9 +735,10 @@
     .dashboard-grid { grid-template-columns: 1fr 1fr; }
     .dashboard-cell.span-2 { grid-column: span 2; }
     .dashboard-cell.span-3 { grid-column: span 2; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
   }
   @media (max-width: 768px) {
-    nav.top-nav { padding: 14px 20px; }
+    nav.top-nav { padding: 14px 20px; flex-wrap: wrap; gap: 10px; }
     .nav-menu { display: none; }
     .hero { padding: 100px 20px 40px; grid-template-columns: 1fr; gap: 20px; }
     .hero h1 { letter-spacing: -2px; }
@@ -708,7 +765,7 @@
 <body>
 
 <div class="blueprint-grid"></div>
-<div class="corner-mark tl">CEILINGCORE v2.4.2</div>
+<div class="corner-mark tl">CEILINGCORE v2.4.4</div>
 <div class="corner-mark tr">SYS :: OPERATIONAL</div>
 <div class="corner-mark bl">LAT 53.9045 · LON 27.5615</div>
 <div class="corner-mark br">© 2026</div>
@@ -717,7 +774,7 @@
   <div class="brand">
     <span class="brand-mark"></span>
     CEILINGCORE
-    <span class="brand-version">v2.4.2</span>
+    <span class="brand-version">v2.4.4</span>
   </div>
   <div class="nav-menu">
     <a href="#cc-system">System</a>
@@ -750,7 +807,7 @@
     <canvas id="hero-3d"></canvas>
     <div class="hud hud-tl"><span class="hud-line">NODE :: <span class="hud-val">2457.AX</span></span></div>
     <div class="hud hud-tr"><span class="hud-line">LATENCY :: <span class="hud-val">0.42ms</span></span></div>
-    <div class="hud hud-bl"><span class="hud-line">/// CORE_v2.4.2 ///</span></div>
+    <div class="hud hud-bl"><span class="hud-line">/// CORE_v2.4.4 ///</span></div>
     <div class="hud hud-br"><span class="hud-line">ERR :: <span class="hud-val">0.001%</span></span></div>
   </div>
 </section>
@@ -880,7 +937,7 @@
         <rect x="-110" y="-45" width="220" height="90" fill="#0a0a0a" rx="4"/>
         <text x="0" y="-12" text-anchor="middle" fill="#fff" font-family="monospace" font-size="13" font-weight="600">CEILINGCORE</text>
         <text x="0" y="6" text-anchor="middle" fill="#ff3b1f" font-family="monospace" font-size="10">INDUSTRIAL OS</text>
-        <text x="0" y="26" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="monospace" font-size="9">v2.4.2 · LIVE</text>
+        <text x="0" y="26" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="monospace" font-size="9">v2.4.4 · LIVE</text>
       </g>
       <g font-family="monospace" font-size="11">
         <g transform="translate(150, 100)"><rect x="-70" y="-30" width="140" height="60" fill="#fff" stroke="#0a0a0a" stroke-width="1.5"/><text x="0" y="-6" text-anchor="middle" font-weight="600">1C:ERP</text><text x="0" y="14" text-anchor="middle" font-size="9" fill="#8a8a8a">accounting</text></g>
@@ -898,6 +955,8 @@
       <path d="M 710 280 Q 800 400 980 400" fill="none" stroke="#0a0a0a" stroke-width="1" stroke-dasharray="4 4"/>
       <circle r="3" fill="#ff3b1f"><animateMotion dur="3s" repeatCount="indefinite" path="M 220 250 L 490 250"/></circle>
       <circle r="3" fill="#00ff88"><animateMotion dur="2.5s" repeatCount="indefinite" path="M 710 250 L 980 250"/></circle>
+      <circle r="2" fill="#0a0a0a"><animateMotion dur="4s" repeatCount="indefinite" path="M 220 100 Q 400 100 490 220"/></circle>
+      <circle r="2" fill="#0a0a0a"><animateMotion dur="4.5s" repeatCount="indefinite" path="M 710 220 Q 800 100 980 100"/></circle>
     </svg>
     <div class="integration-caption">// real-time sync · latency 0.42ms</div>
   </div>
@@ -965,8 +1024,8 @@
       return;
     }
 
-    // HERO 3D
-    (function() {
+    // ============ HERO 3D ============
+    (function initHero() {
       var canvas = document.getElementById('hero-3d');
       if (!canvas) return;
       var parent = canvas.parentElement;
@@ -1078,7 +1137,7 @@
       });
     })();
 
-    // 3D MODELS
+    // ============ 3D MODELS FACTORY ============
     function setupModel(containerId, buildFn, options) {
       options = options || {};
       var container = document.getElementById(containerId);
@@ -1094,18 +1153,18 @@
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       container.appendChild(renderer.domElement);
 
-      scene.add(new THREE.AmbientLight(0xffffff, 1.0));
-      scene.add(new THREE.HemisphereLight(0xffffff, 0xeeeee8, 0.8));
+      scene.add(new THREE.AmbientLight(0xffffff, 1.2));
+      scene.add(new THREE.HemisphereLight(0xffffff, 0xeeeee8, 0.9));
 
-      var key = new THREE.DirectionalLight(0xffffff, 2.5);
+      var key = new THREE.DirectionalLight(0xffffff, 2.2);
       key.position.set(6, 10, 8);
       scene.add(key);
 
-      var fill = new THREE.DirectionalLight(0xffffff, 1.0);
+      var fill = new THREE.DirectionalLight(0xffffff, 0.9);
       fill.position.set(-5, 3, 4);
       scene.add(fill);
 
-      var rim = new THREE.DirectionalLight(0xff3b1f, 1.2);
+      var rim = new THREE.DirectionalLight(0xff3b1f, 1.4);
       rim.position.set(0, -4, -6);
       scene.add(rim);
 
@@ -1114,18 +1173,29 @@
 
       var animation = buildFn(group) || function(){};
 
+      var hoverable = options.hoverable !== false;
+      var hoverTarget = { x: 0, y: 0 };
+      if (hoverable) {
+        container.addEventListener('mousemove', function(e) {
+          var rect = container.getBoundingClientRect();
+          hoverTarget.x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+          hoverTarget.y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+        });
+        container.addEventListener('mouseleave', function() {
+          hoverTarget.x = 0;
+          hoverTarget.y = 0;
+        });
+      }
+
       function resize() {
-        var w = container.clientWidth;
-        var h = container.clientHeight;
+        var w = container.clientWidth, h = container.clientHeight;
         if (w === 0 || h === 0) return;
         renderer.setSize(w, h, false);
         camera.aspect = w / h;
         camera.updateProjectionMatrix();
       }
       window.addEventListener('resize', resize);
-      setTimeout(resize, 50);
-      setTimeout(resize, 300);
-      resize();
+      setTimeout(resize, 50); setTimeout(resize, 300); resize();
 
       var startTime = performance.now();
       var lastTime = startTime;
@@ -1141,18 +1211,25 @@
         if (options.autoRotate !== false) {
           group.rotation.y += (options.autoRotateSpeed || 0.5) * dt;
         }
+        // Параллакс от мыши
+        if (hoverable) {
+          group.rotation.x += ((hoverTarget.y * 0.3) - group.rotation.x) * 0.05;
+        }
         renderer.render(scene, camera);
       }
       animate();
     }
 
-    // BUILDING
+    // ============ 1. BUILDING BIM ============
     setupModel('model-building', function(group) {
       var matConcrete = new THREE.MeshStandardMaterial({ color: 0xd8dde5, metalness: 0.1, roughness: 0.85 });
       var matGlass = new THREE.MeshStandardMaterial({ color: 0xa8d4e8, metalness: 0.3, roughness: 0.1, transparent: true, opacity: 0.5 });
       var matAccent = new THREE.MeshStandardMaterial({ color: 0xff3b1f, metalness: 0.6, roughness: 0.3, emissive: 0xff3b1f, emissiveIntensity: 0.4 });
+      var matWire = new THREE.LineBasicMaterial({ color: 0x0a0a0a, transparent: true, opacity: 0.35 });
 
       var W = 3, D = 3, FLOORS = 5, FLOOR_H = 0.8;
+      var totalH = FLOORS * FLOOR_H;
+
       var base = new THREE.Mesh(new THREE.BoxGeometry(W + 0.6, 0.15, D + 0.6), matConcrete);
       base.position.y = -0.075;
       group.add(base);
@@ -1182,6 +1259,14 @@
         slab.userData.isSlab = true;
         group.add(slab);
         elements.push(slab);
+
+        var slabEdges = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(W, 0.1, D)), matWire);
+        slabEdges.position.y = fl * FLOOR_H + 0.05;
+        slabEdges.scale.set(0.001, 1, 0.001);
+        slabEdges.userData.delay = fl * 0.4;
+        slabEdges.userData.isEdges = true;
+        group.add(slabEdges);
+        elements.push(slabEdges);
       }
 
       for (var f2 = 0; f2 < FLOORS; f2++) {
@@ -1225,7 +1310,8 @@
       group.add(roof);
       elements.push(roof);
 
-      group.position.y = -FLOORS * FLOOR_H / 2 + 0.2;
+      // Настройка камеры — модель ровно в центре
+      group.position.y = -totalH / 2 + 0.3;
       group.rotation.y = 0.5;
 
       return function(t) {
@@ -1236,15 +1322,21 @@
           var progress = Math.max(0, Math.min(1, (cycleT - el.userData.delay) / appearTime));
           var eased = 1 - Math.pow(1 - progress, 3);
           if (el.userData.isSlab) { el.scale.x = 0.001 + eased * 0.999; el.scale.z = 0.001 + eased * 0.999; }
+          else if (el.userData.isEdges) {
+            el.scale.x = 0.001 + eased * 0.999;
+            el.scale.z = 0.001 + eased * 0.999;
+            el.material.opacity = (1 - eased) * 0.5;
+            el.visible = eased < 0.95;
+          }
           else if (el.userData.isFacadeX) el.scale.x = 0.001 + eased * 0.999;
           else if (el.userData.isFacadeZ) el.scale.z = 0.001 + eased * 0.999;
           else { var s = 0.001 + eased * 0.999; el.scale.set(s, s, s); }
         });
         group.rotation.y = 0.5 + cycleT * 0.35;
       };
-    }, { cameraY: 3.5, cameraZ: 8, autoRotate: false });
+    }, { cameraY: 4.0, cameraZ: 9, autoRotate: false, targetY: 0 });
 
-    // ASSEMBLY
+    // ============ 2. ASSEMBLY ============
     setupModel('model-assembly', function(group) {
       var matSteel = new THREE.MeshStandardMaterial({ color: 0xe8ecf1, metalness: 0.9, roughness: 0.2 });
       var matSteelDark = new THREE.MeshStandardMaterial({ color: 0x6a7382, metalness: 0.9, roughness: 0.3 });
@@ -1365,95 +1457,101 @@
         }
         mech.rotation.y = Math.sin(t * 0.2) * 0.4;
       };
-    }, { cameraY: 1.5, cameraZ: 8, autoRotate: false });
+    }, { cameraY: 2.2, cameraZ: 9, autoRotate: false, targetY: 0 });
 
-    // BEARING
+    // ============ 3. BEARING (правильный ракурс) ============
     setupModel('model-bearing', function(group) {
       var matSteel = new THREE.MeshStandardMaterial({ color: 0xe8ecf1, metalness: 0.95, roughness: 0.12 });
+      var matInner = new THREE.MeshStandardMaterial({ color: 0xc4ccd6, metalness: 0.9, roughness: 0.2 });
       var matBall = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 1, roughness: 0.02 });
       var matAccent = new THREE.MeshStandardMaterial({ color: 0xff3b1f, metalness: 0.6, roughness: 0.3 });
 
-      var outer = new THREE.Mesh(new THREE.TorusGeometry(1.9, 0.35, 24, 64), matSteel);
+      var outer = new THREE.Mesh(new THREE.TorusGeometry(1.5, 0.28, 24, 64), matSteel);
       outer.rotation.x = Math.PI / 2;
       group.add(outer);
 
-      var inner = new THREE.Mesh(new THREE.TorusGeometry(1.0, 0.28, 24, 64), matSteel);
+      var inner = new THREE.Mesh(new THREE.TorusGeometry(0.85, 0.22, 24, 64), matInner);
       inner.rotation.x = Math.PI / 2;
       group.add(inner);
 
       var balls = [];
       for (var row = 0; row < 2; row++) {
-        var y = row === 0 ? -0.15 : 0.15;
-        for (var i = 0; i < 14; i++) {
-          var a = (i / 14) * Math.PI * 2;
-          var ball = new THREE.Mesh(new THREE.SphereGeometry(0.22, 20, 20), matBall);
-          ball.position.set(Math.cos(a) * 1.45, y, Math.sin(a) * 1.45);
+        var y = row === 0 ? -0.13 : 0.13;
+        for (var i = 0; i < 12; i++) {
+          var a = (i / 12) * Math.PI * 2;
+          var ball = new THREE.Mesh(new THREE.SphereGeometry(0.17, 20, 20), matBall);
+          ball.position.set(Math.cos(a) * 1.18, y, Math.sin(a) * 1.18);
           group.add(ball);
           balls.push(ball);
         }
       }
 
-      var ring = new THREE.Mesh(new THREE.TorusGeometry(2.35, 0.02, 8, 96), matAccent);
+      var ring = new THREE.Mesh(new THREE.TorusGeometry(1.85, 0.018, 8, 96), matAccent);
       ring.rotation.x = Math.PI / 2;
       group.add(ring);
 
-      group.rotation.x = -0.35;
+      group.rotation.x = -0.5;
+      group.rotation.y = 0.3;
 
       return function(t) {
-        group.rotation.y = t * 0.6;
+        group.rotation.y = 0.3 + t * 0.7;
         balls.forEach(function(b) { b.rotation.x += 0.05; b.rotation.z += 0.05; });
       };
-    }, { cameraY: 2, cameraZ: 7, autoRotate: false });
+    }, { cameraY: 2.8, cameraZ: 6, autoRotate: false, targetY: 0 });
 
-    // T-PROFILE
+    // ============ 4. T-PROFILE (правильный ракурс) ============
     setupModel('model-profile', function(group) {
       var matSteel = new THREE.MeshStandardMaterial({ color: 0xe8ecf1, metalness: 0.95, roughness: 0.15 });
       var matBolt = new THREE.MeshStandardMaterial({ color: 0x4a5260, metalness: 0.9, roughness: 0.3 });
       var matClip = new THREE.MeshStandardMaterial({ color: 0xff3b1f, metalness: 0.7, roughness: 0.3 });
       var matPanel = new THREE.MeshStandardMaterial({ color: 0xf0f0ec, metalness: 0.1, roughness: 0.8 });
 
-      var LEN = 8;
-      var flange = new THREE.Mesh(new THREE.BoxGeometry(LEN, 0.08, 0.9), matSteel);
+      var LEN = 5;
+      var flange = new THREE.Mesh(new THREE.BoxGeometry(LEN, 0.08, 0.8), matSteel);
       group.add(flange);
 
-      var web = new THREE.Mesh(new THREE.BoxGeometry(LEN, 0.6, 0.06), matSteel);
-      web.position.y = -0.34;
+      var web = new THREE.Mesh(new THREE.BoxGeometry(LEN, 0.55, 0.06), matSteel);
+      web.position.y = -0.32;
       group.add(web);
 
       var bulb = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, LEN, 24), matSteel);
       bulb.rotation.z = Math.PI / 2;
-      bulb.position.y = -0.7;
+      bulb.position.y = -0.65;
       group.add(bulb);
 
-      for (var i = -3; i <= 3; i++) {
-        var hole = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.1, 16), matBolt);
-        hole.position.set(i * 1.0, 0.05, 0);
+      var bottomFlange = new THREE.Mesh(new THREE.BoxGeometry(LEN, 0.05, 0.55), matSteel);
+      bottomFlange.position.y = -0.72;
+      group.add(bottomFlange);
+
+      for (var i = -2; i <= 2; i++) {
+        var hole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.1, 16), matBolt);
+        hole.position.set(i * 0.9, 0.05, 0);
         group.add(hole);
       }
 
-      [-2.4, 2.4].forEach(function(x) {
+      [-1.8, 1.8].forEach(function(x) {
         var bg = new THREE.Group();
         bg.position.set(x, 0, 0);
-        var shank = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.9, 16), matBolt);
+        var shank = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.9, 16), matBolt);
         shank.position.y = -0.4;
         bg.add(shank);
-        var head = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.1, 6), matBolt);
+        var head = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.1, 6), matBolt);
         head.position.y = 0.1;
         bg.add(head);
-        var nut = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.08, 6), matBolt);
+        var nut = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.08, 6), matBolt);
         nut.position.y = -0.8;
         bg.add(nut);
         group.add(bg);
       });
 
-      [-3.2, 0, 3.2].forEach(function(cx) {
+      [-2, 0, 2].forEach(function(cx) {
         var cg = new THREE.Group();
         cg.position.set(cx, 0.12, 0);
-        var base = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.02, 0.4), matClip);
+        var base = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.02, 0.4), matClip);
         cg.add(base);
         [-1, 1].forEach(function(sz) {
-          var arm = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.35, 0.03), matClip);
-          arm.position.set(0, 0.18, sz * 0.18);
+          var arm = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.32, 0.03), matClip);
+          arm.position.set(0, 0.16, sz * 0.16);
           arm.rotation.x = sz * -0.25;
           cg.add(arm);
         });
@@ -1461,43 +1559,44 @@
       });
 
       [-1, 1].forEach(function(pz) {
-        var panel = new THREE.Mesh(new THREE.BoxGeometry(5, 0.05, 0.6), matPanel);
-        panel.position.set(0, 0.5, pz * 0.6);
+        var panel = new THREE.Mesh(new THREE.BoxGeometry(4, 0.05, 0.5), matPanel);
+        panel.position.set(0, 0.45, pz * 0.55);
         group.add(panel);
       });
 
-      group.rotation.x = -0.25;
-      group.rotation.y = 0.35;
+      group.rotation.x = -0.3;
+      group.rotation.y = 0.4;
+      group.position.y = 0.15;
 
       return function(t) {
-        group.rotation.y = 0.35 + Math.sin(t * 0.3) * 0.25;
+        group.rotation.y = 0.4 + Math.sin(t * 0.3) * 0.25;
       };
-    }, { cameraY: 3, cameraZ: 9, autoRotate: false });
+    }, { cameraY: 2.5, cameraZ: 7, autoRotate: false, targetY: 0 });
 
-    // TURBINE
+    // ============ 5. TURBINE (правильный ракурс) ============
     setupModel('model-turbine', function(group) {
       var matBlade = new THREE.MeshStandardMaterial({ color: 0xe8ecf1, metalness: 0.92, roughness: 0.15 });
       var matHot = new THREE.MeshStandardMaterial({ color: 0xff3b1f, metalness: 0.7, roughness: 0.3, emissive: 0xff3b1f, emissiveIntensity: 0.4 });
       var matShaft = new THREE.MeshStandardMaterial({ color: 0x6a7382, metalness: 0.9, roughness: 0.22 });
 
-      var shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 5.5, 32), matShaft);
+      var shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 4.5, 32), matShaft);
       shaft.rotation.z = Math.PI / 2;
       group.add(shaft);
 
       for (var d = 0; d < 3; d++) {
-        var x = -1.8 + d * 1.7;
-        var radius = 1.4 - d * 0.18;
-        var bladeLen = 0.7 - d * 0.05;
+        var x = -1.5 + d * 1.4;
+        var radius = 1.15 - d * 0.15;
+        var bladeLen = 0.55 - d * 0.04;
         var isHot = d === 1;
 
-        var disc = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, 0.2, 48), matShaft);
+        var disc = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, 0.18, 48), matShaft);
         disc.rotation.z = Math.PI / 2;
         disc.position.x = x;
         group.add(disc);
 
-        for (var i = 0; i < 32; i++) {
-          var a = (i / 32) * Math.PI * 2;
-          var blade = new THREE.Mesh(new THREE.BoxGeometry(0.06, bladeLen, 0.18), isHot ? matHot : matBlade);
+        for (var i = 0; i < 28; i++) {
+          var a = (i / 28) * Math.PI * 2;
+          var blade = new THREE.Mesh(new THREE.BoxGeometry(0.05, bladeLen, 0.16), isHot ? matHot : matBlade);
           blade.position.set(x, Math.cos(a) * (radius + bladeLen / 2), Math.sin(a) * (radius + bladeLen / 2));
           blade.rotation.x = a;
           blade.rotation.y = 0.35 * (isHot ? -1 : 1);
@@ -1505,16 +1604,17 @@
         }
       }
 
-      group.rotation.x = -0.35;
+      group.rotation.x = -0.2;
       group.rotation.y = 0.5;
+      group.position.y = 0.1;
 
       return function(t) {
         group.rotation.y = 0.5 + t * 1.5;
         matHot.emissiveIntensity = 0.3 + Math.sin(t * 4) * 0.2;
       };
-    }, { cameraY: 2.2, cameraZ: 8, autoRotate: false });
+    }, { cameraY: 2.5, cameraZ: 7, autoRotate: false, targetY: 0 });
 
-    // MARQUEE
+    // ============ MARQUEE ============
     (function() {
       var el = document.getElementById('marquee');
       if (!el) return;
@@ -1524,7 +1624,7 @@
       el.innerHTML = html;
     })();
 
-    // DASHBOARD CHART
+    // ============ DASHBOARD CHART ============
     (function() {
       var el = document.getElementById('dash-chart');
       if (!el) return;
@@ -1538,7 +1638,7 @@
       });
     })();
 
-    // DASHBOARD ORDERS
+    // ============ DASHBOARD ORDERS ============
     (function() {
       var el = document.getElementById('dash-orders');
       if (!el) return;
@@ -1560,7 +1660,7 @@
       });
     })();
 
-    // FLOW LOG
+    // ============ FLOW LOG ============
     (function() {
       var el = document.getElementById('flow-log');
       if (!el) return;
@@ -1596,7 +1696,7 @@
       push();
     })();
 
-    // COUNTERS
+    // ============ COUNTERS ============
     (function() {
       var counters = document.querySelectorAll('.dash-value[data-count]');
       counters.forEach(function(c) {
@@ -1613,7 +1713,7 @@
       });
     })();
 
-    // REVEAL
+    // ============ REVEAL ============
     (function() {
       var els = document.querySelectorAll('.reveal');
       if (!('IntersectionObserver' in window)) {
